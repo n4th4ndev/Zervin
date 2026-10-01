@@ -28,7 +28,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm test
+      # Tests run in the CI workflow on Linux; some fixtures assume Unix paths and no Xcode.
       - run: npm run build
       - name: Package and publish
         run: npx electron-builder ${{ matrix.target }} --publish always
