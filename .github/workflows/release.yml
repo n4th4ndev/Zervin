@@ -11,7 +11,25 @@ permissions:
   contents: write
 
 jobs:
+  # A Release needs its tag: when the workflow is started by hand, tag the commit with v<package.json version>.
+  tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: tag
+        run: |
+          TAG="v$(node -p "require('./package.json').version")"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null; then
+            echo "$TAG already exists"
+          else
+            git tag "$TAG" && git push origin "$TAG"
+          fi
+
   build:
+    needs: tag
     strategy:
       fail-fast: false
       matrix:
