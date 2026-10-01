@@ -1,0 +1,38 @@
+name: Release
+
+# Builds Zevrin for macOS (Apple silicon and Intel) and Windows, and publishes the installers to the GitHub
+# Release of the tag. Push a tag such as v0.1.0 (matching package.json "version"), or run it by hand.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            target: --mac --arm64 --x64
+          - os: windows-latest
+            target: --win --x64 --arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Package and publish
+        run: npx electron-builder ${{ matrix.target }} --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # The app is not code-signed yet.
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"

@@ -43,7 +43,7 @@ npm run desktop:dev     # Electron + Next.js dev server with hot reload
 | `npm test` | Runs the test suites. |
 | `npm run check` | Typecheck, tests and build. |
 
-The app is not code-signed: open it the first time with right-click → **Open**. It uses the `claude` and `codex` CLIs installed on your machine, which keeps it around 300 MB.
+Installers for macOS (Apple silicon and Intel) and Windows are published on the [Releases](../../releases) page: pushing a tag such as `v0.1.0` builds and publishes them through GitHub Actions. The app is not code-signed: open it the first time with right-click → **Open**. It uses the `claude` and `codex` CLIs installed on your machine, which keeps it around 300 MB.
 
 ### macOS permissions
 
