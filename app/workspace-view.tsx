@@ -326,6 +326,8 @@ export function WorkspaceView(props: WorkspaceViewProps) {
   const [gitError, setGitError] = useState("");
   const [gitNotice, setGitNotice] = useState("");
   const [commitMessage, setCommitMessage] = useState("");
+  const [messageBusy, setMessageBusy] = useState(false);
+  const [messageAi, setMessageAi] = useState<"claude" | "codex">(() => { try { return localStorage.getItem("zevrin-commit-ai") === "codex" ? "codex" : "claude"; } catch { return "claude"; } });
   const [diff, setDiff] = useState<DiffState | null>(null);
   const paletteListRef = useRef<HTMLDivElement>(null);
   const dropTargetRef = useRef<DropTarget | null>(null);
@@ -1023,6 +1025,23 @@ export function WorkspaceView(props: WorkspaceViewProps) {
     runGitAction(async () => { await api.gitCommit(active.path, commitMessage); setCommitMessage(""); setDiff(null); }, "Committed.");
   }
 
+  // ✨ Writes the commit message from the staged changes (or all changes when nothing is staged) with Claude or Codex.
+  async function generateCommitMessage(provider: "claude" | "codex" = messageAi) {
+    const api = window.zevrinDesktop;
+    if (!api?.gitGenerateMessage || !active || messageBusy) return;
+    setMessageBusy(true); setGitError("");
+    try {
+      const { message, staged } = await api.gitGenerateMessage(active.path, provider);
+      setCommitMessage(message);
+      if (!staged) setGitNotice("Nothing is staged: the message describes every change. Stage the files to commit.");
+    } catch (error) { setGitError((error instanceof Error ? error.message : String(error)).replace(/^Error invoking remote method '[^']+': (Error: )?/, "") || "The message could not be generated."); }
+    finally { setMessageBusy(false); }
+  }
+  function pickMessageAi(provider: "claude" | "codex") {
+    setMessageAi(provider);
+    try { localStorage.setItem("zevrin-commit-ai", provider); } catch { /* storage unavailable */ }
+  }
+
   function runSync(action: "fetch" | "pull" | "push") {
     const api = window.zevrinDesktop;
     if (!api || !active || syncAction) return;
@@ -1687,6 +1706,10 @@ export function WorkspaceView(props: WorkspaceViewProps) {
           </div>
           {branchFormOpen && <form className="worktree-form" onSubmit={event => { event.preventDefault(); checkoutBranch(newBranchName.trim(), true); }}><input aria-label="New branch name" placeholder="feature/my-change" value={newBranchName} onChange={event => setNewBranchName(event.target.value)} autoFocus/><button type="submit" disabled={gitBusy || !newBranchName.trim()}>Create</button><button type="button" aria-label="Cancel branch creation" onClick={() => setBranchFormOpen(false)}>×</button></form>}
           <div className="commit-box">
+            <div className="commit-ai">
+              <button type="button" className={"commit-ai-generate" + (messageBusy ? " busy" : "")} disabled={messageBusy || git.changes.length === 0} onClick={() => generateCommitMessage()} title={`Write the commit message with ${messageAi === "codex" ? "Codex" : "Claude"} from the ${stagedChanges.length ? "staged" : "uncommitted"} changes`}>{messageBusy ? <><i className="commit-ai-spinner"/>Writing…</> : <>✨ Generate</>}</button>
+              <select aria-label="Model that writes the commit message" value={messageAi} disabled={messageBusy} onChange={event => pickMessageAi(event.target.value === "codex" ? "codex" : "claude")}><option value="claude">Claude</option><option value="codex">Codex</option></select>
+            </div>
             <textarea aria-label="Commit message" placeholder={`Message (⌘↵ to commit on "${git.branch}")`} value={commitMessage} onChange={event => setCommitMessage(event.target.value)} onKeyDown={event => { if ((event.metaKey || event.ctrlKey) && event.key === "Enter") { event.preventDefault(); commit(); } }}/>
             <button className="git-primary" disabled={gitBusy || !commitMessage.trim() || stagedChanges.length === 0} onClick={commit}>{gitBusy ? "Working…" : `Commit${stagedChanges.length ? ` (${stagedChanges.length})` : ""}`}</button>
             {git.upstream ? <div className="sync-note">{git.ahead > 0 && `↑${git.ahead} `}{git.behind > 0 && `↓${git.behind} `}{git.ahead === 0 && git.behind === 0 && "In sync with "}{git.ahead + git.behind > 0 && "vs "}{git.upstream}</div> : !git.unborn && <div className="sync-note">No upstream · push to publish this branch</div>}

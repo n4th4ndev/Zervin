@@ -15,11 +15,12 @@ const { parseStatusOutput, parseBranchList, parseLogOutput, isValidBranchName } 
 const { searchWorkspaceFiles, searchWorkspaceText } = require("./workspace-files.cjs");
 const { AgentBridge, loadSdk: loadClaudeSdk, sdkLoadMessage, setClaudeResolver, claudeExecutableOptions } = require("./agent-bridge.cjs");
 const { InlineEditor } = require("./inline-edit.cjs");
+const { generateCommitMessage } = require("./commit-message.cjs");
 const { startMcpServer } = require("./mcp-server.cjs");
 const { VscodeServer } = require("./vscode-server.cjs");
 const { DeviceManager } = require("./devices.cjs");
 const { previewSession } = require("./preview-agent.cjs");
-const { CodexBridge, listCodexThreads, codexThreadMessages } = require("./codex-bridge.cjs");
+const { CodexBridge, loadSdk: loadCodexSdk, listCodexThreads, codexThreadMessages } = require("./codex-bridge.cjs");
 
 app.setName("Zevrin");
 
@@ -566,6 +567,27 @@ ipcMain.handle("zevrin:git-commit", async (_event, root, message) => {
   if (typeof message !== "string" || !message.trim() || message.length > 20000) throw new Error("Enter a commit message.");
   await runGit(cwd, ["commit", "-m", message.trim()]);
   return true;
+});
+
+// ✨ in Source Control: a commit message for the staged changes (or every change when nothing is staged yet).
+ipcMain.handle("zevrin:git-generate-message", async (_event, root, provider) => {
+  const cwd = await gitWorkspace(root);
+  const staged = (await runGit(cwd, ["diff", "--cached", "--name-only"])).trim() !== "";
+  const scope = staged ? ["--cached"] : [];
+  let diff = await runGit(cwd, ["diff", ...scope, "--no-color", "--no-ext-diff", "-U2"]);
+  let stat = await runGit(cwd, ["diff", ...scope, "--stat"]);
+  if (!staged) {
+    const untracked = (await runGit(cwd, ["ls-files", "--others", "--exclude-standard"])).trim();
+    if (untracked) { stat += "\nNew files:\n" + untracked; diff += "\n" + untracked.split("\n").map(file => "new file: " + file).join("\n"); }
+  }
+  if (!diff.trim()) throw new Error("There are no changes to describe.");
+  const branch = (await runGit(cwd, ["rev-parse", "--abbrev-ref", "HEAD"]).catch(() => "")).trim();
+  const recent = (await runGit(cwd, ["log", "-n", "10", "--format=%s"]).catch(() => "")).split("\n").filter(Boolean);
+  const which = provider === "codex" ? "codex" : "claude";
+  try {
+    const message = await generateCommitMessage(which, { loadSdk: loadClaudeSdk, executableOptions: claudeExecutableOptions, loadCodexSdk, findCodex: () => findExecutable("codex") }, cwd, { branch, stat, diff, recent, staged });
+    return { message, staged };
+  } catch (error) { throw new Error(/Cannot find package|ERR_MODULE_NOT_FOUND|Cannot find module/.test(error.message) && which === "claude" ? sdkLoadMessage(error) : error.message); }
 });
 
 ipcMain.handle("zevrin:git-init", async (_event, root) => {

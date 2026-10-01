@@ -154,4 +154,4 @@ async function codexThreadMessages(file) {
   return parseRollout(await fsp.readFile(file, "utf8")).messages;
 }
 
-module.exports = { CodexBridge, accessModes, parseRollout, listCodexThreads, codexThreadMessages };
+module.exports = { CodexBridge, accessModes, parseRollout, listCodexThreads, codexThreadMessages, loadSdk };

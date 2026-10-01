@@ -62,6 +62,7 @@ declare global {
       gitUnstage: (root: string, paths: string[]) => Promise<boolean>;
       gitDiscard: (root: string, paths: string[]) => Promise<boolean>;
       gitCommit: (root: string, message: string) => Promise<boolean>;
+      gitGenerateMessage: (root: string, provider: "claude" | "codex") => Promise<{ message: string; staged: boolean }>;
       gitInit: (root: string) => Promise<boolean>;
       gitBranches: (root: string) => Promise<GitBranch[]>;
       gitCheckout: (root: string, branch: string, create?: boolean) => Promise<boolean>;
