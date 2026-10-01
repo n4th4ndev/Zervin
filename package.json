@@ -45,6 +45,7 @@
   },
   "productName": "Zevrin",
   "author": "n4th4n",
+  "license": "MIT",
   "build": {
     "appId": "dev.n4th4n.zevrin",
     "productName": "Zevrin",

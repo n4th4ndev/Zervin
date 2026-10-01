@@ -72,4 +72,4 @@ The app is not code-signed: open it the first time with right-click → **Open**
 
 ## License
 
-All rights reserved.
+[MIT](LICENSE) © 2026 n4th4n
