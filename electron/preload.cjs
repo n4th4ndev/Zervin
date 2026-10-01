@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld("zevrinDesktop", {
   gitUnstage: (root, paths) => ipcRenderer.invoke("zevrin:git-unstage", root, paths),
   gitDiscard: (root, paths) => ipcRenderer.invoke("zevrin:git-discard", root, paths),
   gitCommit: (root, message) => ipcRenderer.invoke("zevrin:git-commit", root, message),
+  gitGenerateMessage: (root, provider) => ipcRenderer.invoke("zevrin:git-generate-message", root, provider),
   gitInit: root => ipcRenderer.invoke("zevrin:git-init", root),
   gitBranches: root => ipcRenderer.invoke("zevrin:git-branches", root),
   gitCheckout: (root, branch, create) => ipcRenderer.invoke("zevrin:git-checkout", root, branch, create === true),

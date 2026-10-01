@@ -1427,3 +1427,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .settings-dialog .mcp-command code { overflow-x: auto; padding: 8px 10px; background: #0b0b0d; white-space: nowrap; text-overflow: clip; scrollbar-width: thin; }
 .settings-dialog .mcp-connect { flex-wrap: wrap; }
 .settings-dialog .dialog-footer { position: static; }
+
+/* ✨ commit message generation in Source Control */
+.commit-ai { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.commit-ai-generate { display: inline-flex; height: 24px; flex: 1; align-items: center; justify-content: center; gap: 6px; border: 1px solid rgba(244,81,30,.4); border-radius: 6px; background: rgba(244,81,30,.08); color: #ffb79c; font-size: 11px; cursor: pointer; }
+.commit-ai-generate:hover:not(:disabled) { background: rgba(244,81,30,.16); color: #ffd9c9; }
+.commit-ai-generate:disabled { opacity: .5; cursor: default; }
+.commit-ai-generate.busy { opacity: 1; }
+.commit-ai-spinner { width: 10px; height: 10px; border: 2px solid rgba(255,183,156,.3); border-top-color: #ffb79c; border-radius: 50%; animation: spin .8s linear infinite; }
+.commit-ai select { height: 24px; padding: 0 4px; border: 1px solid var(--line-strong); border-radius: 6px; background: #121214; color: #c9c9cf; font-size: 10.5px; }

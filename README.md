@@ -16,7 +16,7 @@ Zevrin is a desktop IDE for macOS built around coding agents. Claude and Codex w
 - **A browser for your agents.** The Preview tile sends context straight to an agent: element picking with selector, styles and component source, screenshots, screen recordings, console and network. Through MCP tools, agents can also navigate, click, type and inspect the page on their own.
 - **Simulators in the IDE.** iOS simulators and Android emulators are found automatically, booted, and mirrored live at their real size. Tap, swipe and type on the mirror; switch dark / light mode; record the screen; send logs and screenshots to an agent.
 - **A real editor.** Monaco (VS Code's editor) with every language, minimap, multi-cursor, find / replace, diffs, search in files and a fuzzy Command Center (⌘P).
-- **Git built in.** Branches, fetch / pull / push, staging, per-file diffs, commits, history and worktrees.
+- **Git built in.** Branches, fetch / pull / push, staging, per-file diffs, commits, history and worktrees. **✨ Generate** writes the commit message from your staged changes (Claude or Codex), in the style of your recent commits.
 - **Workspace your way.** Docked layout (files left, code centre, agents right, terminals bottom) or free tiling. Several projects open at once, a Canvas for notes and diagrams, and Flow Mode (⌘.), which takes the whole screen and blurs your other displays.
 - **MCP server.** A local MCP endpoint lets Claude Code, the CLI and any MCP client drive Zevrin: open files, preview pages, use the simulators, run terminal commands, show notifications.
 
