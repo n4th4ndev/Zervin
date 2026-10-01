@@ -1,0 +1,157 @@
+{
+  "name": "zevrin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zevrin, the agent-native desktop IDE",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 23779",
+    "build": "next build && node scripts/prepare-standalone.cjs",
+    "start": "next start --hostname 127.0.0.1 --port 23779",
+    "desktop": "electron .",
+    "desktop:dev": "ZEVRIN_DEV=1 electron .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run typecheck && npm test && npm run build",
+    "postinstall": "node scripts/postinstall.cjs",
+    "package": "npm run build && electron-builder --mac --arm64 --x64",
+    "package:dir": "npm run build && electron-builder --mac --dir",
+    "package:mac": "npm run build && electron-builder --mac --arm64 --x64",
+    "package:win": "npm run build && electron-builder --win --x64 --arm64"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.283",
+    "@openai/codex-sdk": "^0.157.1",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "monaco-editor": "^0.57.0",
+    "next": "16.1.1",
+    "node-pty": "^1.1.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "electron": "^39.8.10",
+    "electron-builder": "^26.15.3",
+    "typescript": "^5.9.3"
+  },
+  "allowScripts": {
+    "electron@39.8.10": true,
+    "sharp@0.34.5": true,
+    "node-pty@1.1.0": true
+  },
+  "productName": "Zevrin",
+  "author": "n4th4n",
+  "build": {
+    "appId": "dev.n4th4n.zevrin",
+    "productName": "Zevrin",
+    "copyright": "Copyright \u00a9 2026 n4th4n",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "asar": false,
+    "files": [
+      "electron/**",
+      "types/**",
+      ".next/standalone/**",
+      "!.next/standalone/node_modules/typescript/**",
+      "!.next/standalone/node_modules/@img/**",
+      "!.next/standalone/node_modules/sharp/**",
+      "package.json",
+      "!node_modules/next/**",
+      "!node_modules/@next/**",
+      "!node_modules/react/**",
+      "!node_modules/react-dom/**",
+      "!node_modules/scheduler/**",
+      "!node_modules/monaco-editor/**",
+      "!node_modules/@xterm/**",
+      "!node_modules/styled-jsx/**",
+      "!node_modules/caniuse-lite/**",
+      "!node_modules/@swc/**",
+      "!node_modules/sharp/**",
+      "!node_modules/@img/**",
+      "!node_modules/typescript/**",
+      "!node_modules/@openai/codex-darwin-*/**",
+      "!node_modules/@openai/codex-linux-*/**",
+      "!node_modules/@openai/codex-win32-*/**",
+      "!node_modules/@anthropic-ai/claude-agent-sdk-darwin-*/**",
+      "!node_modules/@anthropic-ai/claude-agent-sdk-linux-*/**",
+      "!node_modules/@anthropic-ai/claude-agent-sdk-win32-*/**",
+      "!**/*.map",
+      "!**/*.d.ts",
+      "!**/*.md",
+      "!**/test/**",
+      "!**/tests/**",
+      "!**/__tests__/**",
+      "!**/docs/**"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "identity": null,
+      "darkModeSupport": true,
+      "extendInfo": {
+        "NSAppleEventsUsageDescription": "Zevrin controls the iOS Simulator and Android emulator windows so you can tap and swipe on them from the Devices tile.",
+        "NSMicrophoneUsageDescription": "Zevrin uses the microphone for voice input in the agent chat.",
+        "NSCameraUsageDescription": "Zevrin does not use the camera; this is required by the embedded browser."
+      },
+      "artifactName": "${productName}-${version}-mac-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "Zevrin",
+      "contents": [
+        {
+          "x": 150,
+          "y": 190
+        },
+        {
+          "x": 390,
+          "y": 190,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "npmRebuild": false,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "artifactName": "${productName}-${version}-win-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Zevrin"
+    }
+  }
+}

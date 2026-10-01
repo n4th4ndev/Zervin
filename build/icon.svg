@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Zevrin</title>
+  <!--
+    Split Z: two flat fields and one cut. No strokes, gradients or effects.
+    Tile: x/y 100, 824 x 824, r 186.
+    Cut: horizontals at y=256 and y=736, both on the 32 px grid, so the cut lands on whole pixels at 32/64/128/256/512.
+    Diagonal: (832,256) to (192,736), a 3-4-5 triangle (rise 480, run 640, length 800).
+    Optical: the signal band (156) is thinner than the ink band (188), because a bright field looks bigger.
+    The ink is drawn 8 px under the signal edge so the shared edge never shows a hairline.
+  -->
+  <path fill="#F1ECE4" d="M103.92 248H856L216 728H924V738A186 186 0 0 1 738 924H286A186 186 0 0 1 100 738V286A186 186 0 0 1 103.92 248Z"/>
+  <path fill="#F4511E" d="M102.44 256A186 186 0 0 1 286 100H738A186 186 0 0 1 924 286V736H192L832 256Z"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <title>Zevrin</title>
+  <!-- Hand-hinted 16 px master (favicon, icon_16x16). Tile snapped to 1..15, cut on whole pixels:
+       signal band 3 px, ink band 4 px, diagonal (13,4) to (4,11), the nearest whole-pixel match to the 3:4 cut. -->
+  <path fill="#F1ECE4" d="M1.04 3.5H14.46L5.46 10.5H15V12A3 3 0 0 1 12 15H4A3 3 0 0 1 1 12V4A3 3 0 0 1 1.04 3.5Z"/>
+  <path fill="#F4511E" d="M1 4A3 3 0 0 1 4 1H12A3 3 0 0 1 15 4V11H4L13 4Z"/>
+</svg>
