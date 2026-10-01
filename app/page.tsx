@@ -1,6 +1,5 @@
 "use client";
 
-import "./storage-migration";
 import { ZevrinIcon } from "./zevrin-mark";
 import { useEffect, useMemo, useState } from "react";
 import type { AIToolInfo } from "../types/desktop";
