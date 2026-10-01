@@ -1,7 +1,6 @@
 const { app, BrowserWindow, desktopCapturer, systemPreferences, utilityProcess, webContents: webContentsModule, Menu, ipcMain, dialog, shell } = require("electron");
 const path = require("node:path");
 const { FlowBackdrop } = require("./flow-backdrop.cjs");
-const { migrateDataFolder, previousMcpServerName } = require("./legacy-migration.cjs");
 const { CheckpointStore } = require("./checkpoints.cjs");
 const os = require("node:os");
 const fs = require("node:fs/promises");
@@ -23,7 +22,6 @@ const { previewSession } = require("./preview-agent.cjs");
 const { CodexBridge, listCodexThreads, codexThreadMessages } = require("./codex-bridge.cjs");
 
 app.setName("Zevrin");
-migrateDataFolder(app);
 
 // The local app service binds to 23779–23788 and falls back along that range when a port is busy.
 const productionPorts = Array.from({ length: 10 }, (_, index) => 23779 + index);
@@ -951,7 +949,7 @@ ipcMain.handle("zevrin:mcp-connect-claude", async () => {
   const claude = await findExecutable("claude");
   if (!claude) throw new Error("The claude CLI was not found.");
   const run = args => new Promise((resolve, reject) => execFile(claude, args, { env: process.env, timeout: 20000 }, (error, stdout, stderr) => error ? reject(new Error(String(stderr || stdout || error.message).trim())) : resolve(String(stdout))));
-  for (const name of [previousMcpServerName, "zevrin"]) await run(["mcp", "remove", "-s", "user", name]).catch(() => {});
+  await run(["mcp", "remove", "-s", "user", "zevrin"]).catch(() => {});
   await run(["mcp", "add", "-s", "user", "--transport", "http", "zevrin", mcpServer.url, "--header", `Authorization: Bearer ${mcpServer.token}`]);
   return true;
 });
