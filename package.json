@@ -153,6 +153,12 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "shortcutName": "Zevrin"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "n4th4ndev",
+      "repo": "Zervin",
+      "releaseType": "release"
     }
   }
 }
