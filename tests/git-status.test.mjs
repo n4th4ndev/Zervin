@@ -31,8 +31,8 @@ test("parses branch and log listings", () => {
     { name: "main", current: true, upstream: "origin/main" },
     { name: "feature/x", current: false, upstream: null },
   ]);
-  assert.deepEqual(parseLogOutput("abc123def\0abc123d\0Add canvas\0Nathan\u00002 hours ago\n\nbad line\n"), [
-    { hash: "abc123def", short: "abc123d", subject: "Add canvas", author: "Nathan", date: "2 hours ago" },
+  assert.deepEqual(parseLogOutput("abc123def\0abc123d\0Add canvas\0Ada\u00002 hours ago\n\nbad line\n"), [
+    { hash: "abc123def", short: "abc123d", subject: "Add canvas", author: "Ada", date: "2 hours ago" },
   ]);
 });
 
